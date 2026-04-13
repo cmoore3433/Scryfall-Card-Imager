@@ -1,4 +1,3 @@
-li {list-style-type: none;}
 # Scryfall-Card-Imager
 Utility for reading a file containing MTG deck information and downloading the respective card images from Scryfall.
 This utility's import utilizes the same format as Moxfield's export feature, allowing the user to easily pull from
