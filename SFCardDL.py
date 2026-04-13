@@ -41,6 +41,26 @@ def matchToString(match):
         return None
     return match.group()
 
+def createCardPath(RelDir, CardName):
+    return os.path.join(os.getcwd(),RelDir, SanitizeReg.sub("",CardName) + ".png")
+
+def dlSingleSidedCard(card):
+    try:
+        url = card.image_uris['png']
+        response = get(url)
+        with open(createCardPath(ImageDir, CardName)), "wb") as img:
+            img.write(response.content)
+        l.write("\tSuccessfully imported!\n")
+    except: # Log failure
+        if card.image_uris['png'] is None:
+            l.write("\tFailed to import face %r.\n" % (face.name))
+            l.write("\t\tUnable to find image url!\n")
+        else:
+            l.write("\tFailed to import card. Image URL:\n")
+            l.write("\t"+url+"\n")
+        return -1
+    return 0
+
 # Begin
 if not os.path.exists(ImageDir):
     os.mkdir(ImageDir)
@@ -67,36 +87,22 @@ with open(ImportFile, "r", encoding="utf-8") as f:
                     try:
                         url = face.image_uris['png']
                         response = get(url)
-                        with open(os.path.join(os.getcwd(),ImageDir, SanitizeReg.sub("",face.name) + ".png"), "wb") as img:
+                        with open(createCardPath(ImageDir, face.name), "wb") as img:
                             img.write(response.content)
                         l.write("\tSuccessfully imported face %r!\n" % (face.name))
-                    except: # Log failure
-
+                    except: # Handle failure
                         if face.image_uris is None:
                             if card.image_uris['png'] is None:
                                 l.write("\tFailed to import face %r.\n" % (face.name))
                                 l.write("\t\tUnable to find image url!\n")
-                            else:
-                                url = card.image_uris['png']
-                                response = get(url)
-                                with open(os.path.join(os.getcwd(),ImageDir, SanitizeReg.sub("",CardName) + ".png"), "wb") as img:
-                                    img.write(response.content)
-                                l.write("\tSuccessfully imported!\n")
+                            else: # Not actually a double-sided card
+                                dlSingleSidedCard(card)
                             break
                         else:
                             l.write("\tFailed to import face %r.\n" % (face.name))
                             l.write("\t\tImage URL: "+url+"\n")
                         continue
             else:
-                try:
-                    url = card.image_uris['png']
-                    response = get(url)
-                    with open(os.path.join(os.getcwd(),ImageDir, SanitizeReg.sub("",CardName) + ".png"), "wb") as img:
-                        img.write(response.content)
-                    l.write("\tSuccessfully imported!\n")
-                except: # Log failure
-                    l.write("\tFailed to import card. Image URL:\n")
-                    l.write("\t"+url+"\n")
-                    continue
+                dlSingleSidedCard(card)
 
 print("Finished!")
