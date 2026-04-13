@@ -48,7 +48,7 @@ def dlSingleSidedCard(card):
     try:
         url = card.image_uris['png']
         response = get(url)
-        with open(createCardPath(ImageDir, CardName)), "wb") as img:
+        with open(createCardPath(ImageDir, CardName), "wb") as img:
             img.write(response.content)
         l.write("\tSuccessfully imported!\n")
     except: # Log failure
