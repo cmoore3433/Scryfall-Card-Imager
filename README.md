@@ -2,7 +2,7 @@
 Utility for reading a file containing MTG deck information and downloading the respective card images from Scryfall.
 This utility's import utilizes the same format as Moxfield's export feature, allowing the user to easily pull from
 their deck lists.
-##### Example
+#### Example
 ```
 ...
 1 Grand Coliseum (TMC) 68
